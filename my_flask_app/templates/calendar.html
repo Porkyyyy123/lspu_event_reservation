@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/calendar.css') }}">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet" />
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- jQuery UI JS -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Moment JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>LSPU Event Reservation</h2>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('reservation') }}">Reservation</a></li>
+                    <li><a href="{{ url_for('events') }}">Events</a></li>
+                    <li><a href="{{ url_for('home') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Calendar Overview</h1>
+                <p>View and manage your events on the calendar.</p>
+            </header>
+
+            <section class="calendar-section">
+                <h2>Your Events</h2>
+                <div id="calendar"></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Debugging: This will log a message to the console when the page is ready
+            console.log("Calendar is ready!");
+
+            var events = [
+                {
+                    title: 'Event 1',
+                    start: '2024-10-15',
+                    description: 'This is a description for Event 1.'
+                },
+                {
+                    title: 'Event 2',
+                    start: '2024-10-17',
+                    end: '2024-10-19',
+                    description: 'This is a description for Event 2.'
+                },
+                {
+                    title: 'Event 3',
+                    start: '2024-10-20T10:00:00',
+                    end: '2024-10-20T12:00:00',
+                    description: 'This is a description for Event 3.'
+                }
+            ];
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                editable: true,
+                events: events,
+                dayRender: function(date, cell) {
+                    var dayEvents = events.filter(function(event) {
+                        return moment(event.start).isSame(date, 'day');
+                    });
+
+                    if (dayEvents.length > 0) {
+                        var tooltipContent = '<strong>Events:</strong><br>';
+                        dayEvents.forEach(function(event) {
+                            tooltipContent += event.title + ': ' + event.description + '<br>';
+                        });
+
+                        cell.attr('title', tooltipContent);
+                        cell.tooltip({
+                            track: true,
+                            content: function() {
+                                return tooltipContent;
+                            }
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

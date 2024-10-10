@@ -1,0 +1,184 @@
+/* profile.css */
+
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+/* Container layout */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: rgba(45, 66, 75, 1); /* Color from your request */
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .logo {
+    width: 250px;
+    margin-bottom: 30px;
+}
+
+.sidebar h2 {
+    color: #fff;
+    margin-bottom: 30px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar nav ul li {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.sidebar nav ul li a {
+    display: block;
+    padding: 10px 15px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover Effect */
+.sidebar nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* A slight lightening effect */
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 250px;
+    background-color: rgba(45, 66, 75, 1);
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+    color: #f4f4f4;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin-bottom: 20px;
+}
+
+.sidebar nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 10px;
+    display: block;
+    transition: background 0.3s ease;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: rgba(45, 66, 75, 0.8);
+    padding-left: 15px;
+    box-shadow: 2px 2px 10px rgb(255, 255, 255); /* Shadow effect on hover */
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    background-color: rgba(45, 66, 75, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    color: #ffffff;
+}
+
+/* Profile Section Styles */
+.profile-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2 {
+    margin-bottom: 20px;
+}
+
+.profile-section label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+.profile-section input[type="text"],
+.profile-section input[type="email"],
+.profile-section input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.profile-section button {
+    background-color: rgba(45, 66, 75, 1);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.profile-section button:hover {
+    background-color: rgba(30, 50, 60, 1);
+}

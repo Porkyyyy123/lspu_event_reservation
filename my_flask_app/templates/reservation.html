@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/reservation.css') }}">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('reservation') }}">Reservation</a></li>
+                    <li><a href="{{ url_for('events') }}">Events</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="{{ url_for('home') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Reservation Page</h1>
+                <p>Reserve your event below</p>
+            </header>
+
+            <section class="reservation-form">
+                <h2>Create Reservation</h2>
+                <form method="POST" action="{{ url_for('reservation') }}">
+                    <label for="event_name">Event Name</label>
+                    <input type="text" id="event_name" name="event_name" required>
+
+                    <label for="reservation_date">Start Date</label>
+                    <input type="date" id="reservation_date" name="reservation_date" required>
+
+                    <label for="end_date">End Date</label>
+                    <input type="date" id="end_date" name="end_date" required>
+
+                    <button type="submit">Reserve</button>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/events.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/calendar.css') }}">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('reservation') }}">Reservation</a></li>
+                    <li><a href="{{ url_for('events') }}">Events</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li><a href="{{ url_for('home') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Events Overview</h1>
+                <p>View past, current, and upcoming events.</p>
+            </header>
+
+            <section class="events-section">
+                <h2>Upcoming Events</h2>
+                <div class="event-card">
+                    <h3>Event Title 1</h3>
+                    <p>Date: October 15, 2024</p>
+                    <p>Description: Description for event 1.</p>
+                </div>
+
+                <div class="event-card">
+                    <h3>Event Title 2</h3>
+                    <p>Date: October 20, 2024</p>
+                    <p>Description: Description for event 2.</p>
+                </div>
+
+                <h2>Current Events</h2>
+                <div class="event-card">
+                    <h3>Current Event Title</h3>
+                    <p>Date: October 10, 2024</p>
+                    <p>Description: Description for current event.</p>
+                </div>
+
+                <h2>Past Events</h2>
+                <div class="event-card">
+                    <h3>Past Event Title 1</h3>
+                    <p>Date: September 30, 2024</p>
+                    <p>Description: Description for past event 1.</p>
+                </div>
+                
+                <div class="event-card">
+                    <h3>Past Event Title 2</h3>
+                    <p>Date: September 25, 2024</p>
+                    <p>Description: Description for past event 2.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
