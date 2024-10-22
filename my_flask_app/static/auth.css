@@ -1,0 +1,146 @@
+/* auth.css */
+
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light background for the entire page */
+}
+
+/* Container to align content */
+.container {
+    display: flex;
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 250px;
+    background-color: rgba(45, 66, 75, 1); /* Sidebar color */
+    color: white;
+    padding: 20px;
+    height: 100vh; /* Full height */
+    position: fixed; /* Fixed sidebar */
+}
+
+/* Sidebar heading */
+.sidebar h2 {
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+/* Sidebar links */
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin: 15px 0;
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+/* Hover effect for sidebar links */
+.sidebar nav ul li a:hover {
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background on hover */
+}
+
+/* Main content styling */
+.main-content {
+    margin-left: 250px; /* Space for the sidebar */
+    padding: 20px;
+    width: calc(100% - 250px); /* Adjust width accordingly */
+}
+
+/* Main Content Styles */
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    background-color: rgba(45, 66, 75, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    color: #ffffff;
+}
+
+/* Profile Section Styles */
+.profile-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section h2 {
+    margin-bottom: 20px;
+}
+
+.profile-section label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+/* Auth Form Styling */
+.auth-form {
+    background-color: #ffffff; /* White background for the form */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for the form */
+    margin-top: 20px; /* Spacing from header */
+}
+
+.auth-form h2 {
+    margin-bottom: 20px; /* Spacing below the title */
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px; /* Space between fields */
+}
+
+.auth-form button {
+    background-color: rgba(45, 66, 75, 1); /* Button color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.auth-form button:hover {
+    background-color: rgba(30, 50, 60, 1); /* Darker button on hover */
+}
+
+/* Link styling */
+.auth-form p {
+    margin-top: 15px; /* Spacing above the paragraph */
+}

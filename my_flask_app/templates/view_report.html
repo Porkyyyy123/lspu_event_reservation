@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .button-container {
+            margin-top: 10px;
+        }
+        .button {
+            padding: 10px 15px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        #report-tab {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: none;
+            padding: 10px;
+        }
+        #report-tab:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Menu</h1>
+
+    <!-- Report Tab -->
+    <a id="report-tab">Report</a>
+
+    <!-- Generate and View Report Options (Initially Hidden) -->
+    <div id="report-options" class="hidden">
+        <div class="button-container">
+            <a href="{{ url_for('generate_report') }}" class="button">Generate Report</a>
+            <a href="{{ url_for('view_report') }}" class="button">View Report Status</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript to toggle the visibility of the report options
+    document.getElementById('report-tab').addEventListener('click', function() {
+        var reportOptions = document.getElementById('report-options');
+        if (reportOptions.classList.contains('hidden')) {
+            reportOptions.classList.remove('hidden');
+        } else {
+            reportOptions.classList.add('hidden');
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,25 +1,29 @@
 <?php
-// Database connection
-$conn = new mysqli('localhost', 'root', '', 'db_lspu_event_reservation');
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Database connection
+    include 'db_connect.php'; // Ensure you have the correct database connection file
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Collect form data
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $role = $_POST['role']; // Capturing the role (admin or student)
+
+    // Hash the password for security
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert the user into the database
+    $sql = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $username, $hashed_password, $role);
+    
+    if ($stmt->execute()) {
+        echo "Sign up successful!";
+        // Redirect to login page or wherever you'd like
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+    $conn->close();
 }
-
-// Get form data
-$name = $_POST['name'];
-$email = $_POST['email'];
-$password = $_POST['password'];  // No hashing, storing plain text
-
-// Insert into database
-$sql = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$password')";
-
-if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
-
-$conn->close();
 ?>

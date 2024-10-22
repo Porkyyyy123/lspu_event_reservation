@@ -14,15 +14,24 @@
             <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
-                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
-                    <li><a href="{{ url_for('reservation') }}">Reservation</a></li>
-                    <li><a href="{{ url_for('events') }}">Events</a></li>
-                    <li><a href="#">Settings</a></li>
+                    {% if session['role'].lower() == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('admin_events') }}">Manage Events</a></li>
+                        <li><a href="{{ url_for('report') }}">Report</a></li>
+                        <li><a href="#">Settings</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                        <li><a href="{{ url_for('events') }}">Events</a></li>
+                        <li><a href="{{ url_for('reservation') }}">Make a Reservation</a></li>
+                        <li><a href="{{ url_for('report') }}">Report</a></li>
+                        <li><a href="#">Settings</a></li>
+                    {% endif %}
                     <li><a href="{{ url_for('home') }}">Logout</a></li>
                 </ul>
             </nav>
         </aside>
+        
 
         <main class="main-content">
             <header>
@@ -32,38 +41,33 @@
 
             <section class="events-section">
                 <h2>Upcoming Events</h2>
-                <div class="event-card">
-                    <h3>Event Title 1</h3>
-                    <p>Date: October 15, 2024</p>
-                    <p>Description: Description for event 1.</p>
-                </div>
+                {% if events %}
+    {% for event in events %}
+    <div class="event-card">
+        <p><strong>Event ID:</strong> {{ event[0] }}</p>
+        <h3>{{ event[1] }}</h3>
+        <p>Date: {{ event[2] }} - {{ event[3] }}</p>
+        <p>Time: {{ event[4] }}</p>
+        <p>Venue: {{ event[5] }}</p>
+        <p>Reserved by: {{ event[6] }}</p>
+        <p>Status: {{ event[7] }}</p>  <!-- Assuming status is in the 7th index of event tuple -->
 
-                <div class="event-card">
-                    <h3>Event Title 2</h3>
-                    <p>Date: October 20, 2024</p>
-                    <p>Description: Description for event 2.</p>
-                </div>
 
-                <h2>Current Events</h2>
-                <div class="event-card">
-                    <h3>Current Event Title</h3>
-                    <p>Date: October 10, 2024</p>
-                    <p>Description: Description for current event.</p>
-                </div>
-
-                <h2>Past Events</h2>
-                <div class="event-card">
-                    <h3>Past Event Title 1</h3>
-                    <p>Date: September 30, 2024</p>
-                    <p>Description: Description for past event 1.</p>
-                </div>
-                
-                <div class="event-card">
-                    <h3>Past Event Title 2</h3>
-                    <p>Date: September 25, 2024</p>
-                    <p>Description: Description for past event 2.</p>
-                </div>
-            </section>
+        <!-- Show Approve and Deny buttons only to admin users -->
+        {% if session['role'].lower() == 'admin' %}
+        <form method="POST" action="{{ url_for('approve_event', event_id=event[0]) }}">
+            <button type="submit">Approve</button>
+        </form>
+        <form method="POST" action="{{ url_for('deny_event', event_id=event[0]) }}">
+            <button type="submit" class="deny-btn">Deny</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No pending events.</p>  <!-- Message when no pending events are found -->
+{% endif %}
+            </section>                 
         </main>
     </div>
 </body>

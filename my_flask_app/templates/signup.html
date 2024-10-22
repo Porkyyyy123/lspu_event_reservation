@@ -1,20 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/accounts.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/auth.css') }}">
 </head>
 <body>
-    <h2>Create an Account</h2>
-    <form action="{{ url_for('signup') }}" method="post">
-        <label for="email">Email:</label>
-        <input type="email" name="email" required>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <button type="submit">Sign Up</button>
-    </form>
-    <p>Already have an account? <a href="{{ url_for('signin') }}">Sign In</a></p>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>LSPU Event Reservation</h2>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('signin') }}">Sign In</a></li>
+                    <li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Sign Up</h1>
+                <p>Create your account.</p>
+            </header>
+
+            <section class="auth-form">
+                <form method="POST" action="{{ url_for('signup') }}">
+                    <!-- Username field -->
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>               
+                         
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                
+                    <!-- Dropdown or radio button for selecting role -->
+                    <label for="role">Role:</label>
+                    <select id="role" name="role" required>
+                        <option value="Admin">Admin</option>
+                        <option value="Student">Student</option>
+                    </select>
+                
+                    <button type="submit">Sign Up</button>
+                </form>                
+                <p>Already have an account? <a href="{{ url_for('signin') }}">Sign In</a></p>
+            </section>
+        </main>
+    </div>
 </body>
 </html>

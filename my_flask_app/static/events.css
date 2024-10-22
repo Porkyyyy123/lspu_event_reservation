@@ -129,10 +129,11 @@ body {
 
 header {
     background: rgba(45, 66, 75, 1); /* Header background color */
-    color: white;
+    color: rgb(0, 0, 0); /* Change text color to ensure readability */
     padding: 10px 20px;
     border-radius: 5px;
 }
+
 
 h1 {
     margin: 0;
@@ -147,7 +148,7 @@ header p {
     background-color: rgba(45, 66, 75, 0.8);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
 }
 
 .events-section h2 {

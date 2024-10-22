@@ -6,6 +6,7 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/report.css') }}">
     <!-- FullCalendar CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet" />
     <!-- jQuery UI CSS -->
@@ -18,6 +19,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <!-- FullCalendar JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <style>
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: rgba(45, 66, 75, 1); /* Updated background color */
+            color: white; /* Updated text color */
+        }
+        form {
+            margin: 20px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -25,20 +52,39 @@
             <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
-                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
-                    <li><a href="{{ url_for('reservation') }}">Reservation</a></li>
-                    <li><a href="{{ url_for('events') }}">Events</a></li>
-                    <li><a href="#">Settings</a></li>
+                    {% if session['role'].lower() == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('events') }}">Manage Events</a></li>
+                        <li class="dropdown">
+                            <a href="#">Report ▼</a>
+                            <div class="dropdown-content">
+                                <a href="{{ url_for('generate_report') }}">Generate Report</a>
+                                <a href="{{ url_for('view_report') }}">View Report</a>
+                            </div>
+                        </li>
+                        <li><a href="#">Settings</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                        <li><a href="{{ url_for('events') }}">Events</a></li>
+                        <li><a href="{{ url_for('reservation') }}">Make a Reservation</a></li>
+                        <li class="dropdown">
+                            <a href="#">Report ▼</a>
+                            <div class="dropdown-content">
+                                <a href="{{ url_for('report') }}">Generate Report</a>
+                                <a href="{{ url_for('report') }}">View Report</a>
+                            </div>
+                        </li>                        
+                        <li><a href="#">Settings</a></li>
+                    {% endif %}
                     <li><a href="{{ url_for('home') }}">Logout</a></li>
                 </ul>
             </nav>
         </aside>
-                
 
         <main class="main-content">
             <header>
-                <h1>Welcome, {{ session['user'] }}!</h1>
+                <h2>Welcome, {{ session['role'].capitalize() }} "{{ session['username'] }}"!</h2>
                 <p>Dashboard overview</p>
             </header>
 
@@ -46,12 +92,13 @@
                 <h2>Calendar</h2>
                 <div id="calendar"></div>
             </section>
+                </form>
+            </section>
         </main>
     </div>
 
     <script>
         $(document).ready(function() {
-            // Debugging: This will log a message to the console when the page is ready
             console.log("Calendar is ready!");
     
             var events = [

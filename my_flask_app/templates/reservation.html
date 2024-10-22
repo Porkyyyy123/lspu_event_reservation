@@ -13,15 +13,24 @@
             <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('dashboard') }}">Home</a></li>
-                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
-                    <li><a href="{{ url_for('reservation') }}">Reservation</a></li>
-                    <li><a href="{{ url_for('events') }}">Events</a></li>
-                    <li><a href="#">Settings</a></li>
+                    {% if session['role'].lower() == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('events') }}">Manage Events</a></li>
+                        <li><a href="{{ url_for('Report') }}">Report</a></li>
+                        <li><a href="#">Settings</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                        <li><a href="{{ url_for('events') }}">Events</a></li>
+                        <li><a href="{{ url_for('reservation') }}">Make a Reservation</a></li>
+                        <li><a href="{{ url_for('report') }}">Report</a></li>
+                        <li><a href="#">Settings</a></li>
+                    {% endif %}
                     <li><a href="{{ url_for('home') }}">Logout</a></li>
                 </ul>
             </nav>
         </aside>
+        
 
         <main class="main-content">
             <header>
@@ -32,18 +41,39 @@
             <section class="reservation-form">
                 <h2>Create Reservation</h2>
                 <form method="POST" action="{{ url_for('reservation') }}">
-                    <label for="event_name">Event Name</label>
+                    <label for="event_name">Event Name:</label>
                     <input type="text" id="event_name" name="event_name" required>
-
-                    <label for="reservation_date">Start Date</label>
-                    <input type="date" id="reservation_date" name="reservation_date" required>
-
-                    <label for="end_date">End Date</label>
+                    
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                    
+                    <label for="end_date">End Date:</label>
                     <input type="date" id="end_date" name="end_date" required>
-
+            
+                    <label for="time">Event Time:</label>
+                    <input type="time" id="time" name="time" required>
+            
+                    <label for="venue">Venue:</label>
+                    <input type="text" id="venue" name="venue" required>
+                
+                    <label for="user_email">User Email:</label>
+                    <input type="text" id="user_email" name="user_email" value="{{ user_email }}" readonly>
+                    <!-- Department Dropdown with updated options -->
+                    <label for="department">Department:</label>
+                    <select id="department" name="department" required>
+                        <option value="" disabled selected>Select your department</option>
+                        <option value="College of Arts and Sciences (CAS)">College of Arts and Sciences (CAS)</option>
+                        <option value="College of Business, Administration and Accountancy (CBAA)">College of Business, Administration and Accountancy (CBAA)</option>
+                        <option value="College of Computer Studies (CCS)">College of Computer Studies (CCS)</option>
+                        <option value="College of Criminal Justice Education (CCJE)">College of Criminal Justice Education (CCJE)</option>
+                        <option value="College of Fisheries (COF)">College of Fisheries (COF)</option>
+                        <option value="College of Food Nutrition and Dietetics (CFND)">College of Food Nutrition and Dietetics (CFND)</option>
+                        <option value="College of Hospitality Management and Tourism (CHMT)">College of Hospitality Management and Tourism (CHMT)</option>
+                        <option value="College of Teacher Education (CTE)">College of Teacher Education (CTE)</option>
+                    </select><br><br>
                     <button type="submit">Reserve</button>
-                </form>
-            </section>
+                </form>               
+            </section>            
         </main>
     </div>
 </body>

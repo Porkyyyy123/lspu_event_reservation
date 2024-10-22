@@ -1,0 +1,104 @@
+implement this code to this code<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/report.css') }}">
+    <!-- FullCalendar CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet" />
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- jQuery UI JS -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Moment JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <style>
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
+            <nav>
+                <ul>
+                    {% if session['role'].lower() == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                        <li><a href="{{ url_for('events') }}">Manage Events</a></li>
+                        <li class="dropdown">
+                            <a href="#">Report ▼</a>
+                            <div class="dropdown-content">
+                                <a href="{{ url_for('generate_report') }}">Generate Report</a>
+                                <a href="{{ url_for('view_report') }}">View Report</a>
+                            </div>
+                        </li>
+                        <li><a href="#">Settings</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                        <li><a href="{{ url_for('events') }}">Events</a></li>
+                        <li><a href="{{ url_for('reservation') }}">Make a Reservation</a></li>
+                        <li class="dropdown">
+                            <a href="#">Report ▼</a>
+                            <div class="dropdown-content">
+                                <a href="{{ url_for('generate_report') }}">Generate Report</a>
+                                <a href="{{ url_for('view_report') }}">View Report</a>
+                            </div>
+                        </li>
+                        <li><a href="#">Settings</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('home') }}">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header>
+                <h1>Admin Dashboard</h1>
+                <p>Manage all reservations and events.</p>
+            </header>
+
+            <section class="reservations-section">
+                <h2>Pending Reservations</h2>
+                {% for reservation in reservations %}
+                <div class="reservation-card">
+                    <h3>{{ reservation[1] }}</h3>  <!-- Event Name -->
+                    <p>Date: {{ reservation[2] }} - {{ reservation[3] }}</p>  <!-- Start-End Dates -->
+                    <p>Time: {{ reservation[4] }}</p>  <!-- Event Time -->
+                    <p>Venue: {{ reservation[5] }}</p>  <!-- Venue -->
+                    <p>Reserved by: {{ reservation[6] }}</p>  <!-- User Email -->
+                    <form method="POST" action="{{ url_for('approve_event', event_id=reservation[0]) }}">
+                        <button type="submit">Approve</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>
