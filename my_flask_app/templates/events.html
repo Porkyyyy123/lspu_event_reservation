@@ -16,7 +16,7 @@
                 <ul>
                     {% if session['role'].lower() == 'admin' %}
                         <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
-                        <li><a href="{{ url_for('admin_events') }}">Manage Events</a></li>
+                        <li><a href="{{ url_for('events') }}">Manage Events</a></li>
                         <li><a href="{{ url_for('report') }}">Report</a></li>
                         <li><a href="#">Settings</a></li>
                     {% else %}
@@ -40,34 +40,39 @@
             </header>
 
             <section class="events-section">
-                <h2>Upcoming Events</h2>
+                <h1>Upcoming Events</h1>
+                <p>Session Role: {{ session['role'] }}</p>
                 {% if events %}
-    {% for event in events %}
-    <div class="event-card">
-        <p><strong>Event ID:</strong> {{ event[0] }}</p>
-        <h3>{{ event[1] }}</h3>
-        <p>Date: {{ event[2] }} - {{ event[3] }}</p>
-        <p>Time: {{ event[4] }}</p>
-        <p>Venue: {{ event[5] }}</p>
-        <p>Reserved by: {{ event[6] }}</p>
-        <p>Status: {{ event[7] }}</p>  <!-- Assuming status is in the 7th index of event tuple -->
+                    {% for event in events %}
+                    <div class="event-card">
+                        <p><strong>Event ID:</strong> {{ event[0] }}</p>
+                        <h3>{{ event[1] }}</h3>
+                        <p>Date: {{ event[2] }} - {{ event[3] }}</p>
+                        <p>Time: {{ event[4] }} - {{ event[5] }}</p>
+                        <p>Venue: {{ event[6] }}</p>
+                        <p>Reserved by: {{ event[7] }}</p>
+                        <p>Department: {{ event[8] }}</p>
+                        <p>Status: {{ event[9] }}</p> <!-- Displays the event status -->
+            
+                        <!-- Show Approve and Deny buttons only to admin users and if the event is pending -->
+                        {% if session['role']|trim == 'admin' and event[9]|trim == 'pending' %}
+                        <p>
+                            <form method="POST" action="{{ url_for('approve_event', event_id=event[0]) }}">
+                                <button type="submit">Approve</button>
+                            </form>
+                            <form method="POST" action="{{ url_for('deny_event', event_id=event[0]) }}">
+                                <button type="submit" class="deny-btn">Deny</button>
+                            </form>
+                        </p>                        
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No pending events.</p> <!-- Message when no pending events are found -->
+                {% endif %}
+            </section>
+            
 
-
-        <!-- Show Approve and Deny buttons only to admin users -->
-        {% if session['role'].lower() == 'admin' %}
-        <form method="POST" action="{{ url_for('approve_event', event_id=event[0]) }}">
-            <button type="submit">Approve</button>
-        </form>
-        <form method="POST" action="{{ url_for('deny_event', event_id=event[0]) }}">
-            <button type="submit" class="deny-btn">Deny</button>
-        </form>
-        {% endif %}
-    </div>
-    {% endfor %}
-{% else %}
-    <p>No pending events.</p>  <!-- Message when no pending events are found -->
-{% endif %}
-            </section>                 
         </main>
     </div>
 </body>
