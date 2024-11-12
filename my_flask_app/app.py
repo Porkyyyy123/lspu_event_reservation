@@ -30,22 +30,27 @@ mysql = MySQL(app)
 def home():
     return render_template('signin.html')
 
+import MySQLdb
+
 @app.route('/reservation', methods=['GET', 'POST'])
 def reservation():
     if request.method == 'POST':
         event_name = request.form['event_name']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
-        event_time = request.form['time']
+        start_time = request.form['start_time']  # Start time field
+        end_time = request.form['end_time']      # End time field
         venue = request.form['venue']
+        department = request.form['department']   # Get department from form
         user_email = session.get('user')  # Get user email from session
 
         # Insert the new reservation into the database
         cur = mysql.connection.cursor()
         cur.execute('''
-            INSERT INTO reservations (event_name, start_date, end_date, event_time, venue, user_email) 
-            VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (event_name, start_date, end_date, event_time, venue, user_email))
+            INSERT INTO reservations (
+                event_name, start_date, end_date, start_time, end_time, venue, department, user_email
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (event_name, start_date, end_date, start_time, end_time, venue, department, user_email))
         mysql.connection.commit()
         cur.close()
 
@@ -53,6 +58,7 @@ def reservation():
         return redirect(url_for('events'))  # Redirect to the events page
 
     return render_template('reservation.html')
+
 
 @app.route('/submit_reservation', methods=['POST'])
 def submit_reservation():
@@ -97,17 +103,57 @@ def signin():
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
+    # Check if the user is logged in and has admin role
     if 'user' not in session or session['role'].lower() != 'admin':
         flash('Access denied!')
         return redirect(url_for('signin'))
 
-    # Fetch only pending reservations for admin review
+    # Create a cursor to interact with the database
     cur = mysql.connection.cursor()
-    cur.execute('SELECT id, event_name, start_date, end_date, event_time, venue, user_email FROM reservations WHERE status = "pending"')
+
+    # Fetch only pending reservations for admin review
+    cur.execute('''
+        SELECT id, event_name, start_date, end_date, start_time, end_time, venue, user_email 
+        FROM reservations 
+        WHERE status = 'pending'
+    ''')
     reservations = cur.fetchall()
+
+    # Get total users
+    cur.execute("SELECT COUNT(*) FROM users")
+    total_users = cur.fetchone()[0]
+
+    # Get active users using the correct column
+    cur.execute("SELECT COUNT(*) FROM users WHERE is_active = 1")
+    active_users = cur.fetchone()[0]
+
+    # Get total events
+    cur.execute("SELECT COUNT(*) FROM events")
+    total_events = cur.fetchone()[0]
+
+    # Get pending approvals
+    cur.execute("SELECT COUNT(*) FROM reservations WHERE status = 'pending'")
+    pending_approvals = cur.fetchone()[0]
+
+    # Get approved and denied events count
+    cur.execute("SELECT COUNT(*) FROM reservations WHERE status = 'Approved'")
+    total_approved = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM reservations WHERE status = 'Denied'")
+    total_denied = cur.fetchone()[0]
+
+    # Close the cursor
     cur.close()
 
-    return render_template('admin_dashboard.html', reservations=reservations)
+    # Render the admin dashboard template with the retrieved data
+    return render_template('admin_dashboard.html',
+                           total_users=total_users,
+                           active_users=active_users,
+                           total_events=total_events,
+                           pending_approvals=pending_approvals,
+                           total_approved=total_approved,
+                           total_denied=total_denied,
+                           reservations=reservations)
 
 @app.route('/admin_events')
 def admin_events():
@@ -117,41 +163,51 @@ def admin_events():
 
     # Fetch only pending events for the admin
     cur = mysql.connection.cursor()
-    cur.execute('SELECT id, event_name, start_date, end_date, event_time, venue, user_email FROM reservations WHERE status = "pending"')
+    cur.execute('SELECT id, event_name, start_date, end_date, start_time, end_time, venue, user_email FROM reservations WHERE status = "pending"')
     events = cur.fetchall()  # Fetch only pending reservations
     cur.close()
 
     return render_template('admin_events.html', events=events)
 
+# Route to approve an event
 @app.route('/approve_event/<int:event_id>', methods=['POST'])
 def approve_event(event_id):
     if 'user' not in session or session['role'].lower() != 'admin':
         flash('Access denied!')
         return redirect(url_for('signin'))
 
-    # Update event status to approved
-    cur = mysql.connection.cursor()
-    cur.execute('UPDATE reservations SET status = "approved" WHERE id = %s', (event_id,))
-    mysql.connection.commit()
-    cur.close()
+    try:
+        # Update event status to Approved
+        cur = mysql.connection.cursor()
+        cur.execute('UPDATE reservations SET status = "Approved" WHERE id = %s', (event_id,))
+        mysql.connection.commit()
+        cur.close()
 
-    flash('Event approved!')
-    return redirect(url_for('admin_dashboard'))
+        flash('Event approved!')
+    except Exception as e:
+        flash(f'Error approving event: {e}')
+    finally:
+        return redirect(url_for('admin_dashboard'))
 
+# Route to deny an event
 @app.route('/deny_event/<int:event_id>', methods=['POST'])
 def deny_event(event_id):
     if 'user' not in session or session['role'].lower() != 'admin':
         flash('Access denied!')
         return redirect(url_for('signin'))
 
-    # Update event status to denied
-    cur = mysql.connection.cursor()
-    cur.execute('UPDATE reservations SET status = "denied" WHERE id = %s', (event_id,))
-    mysql.connection.commit()
-    cur.close()
+    try:
+        # Update event status to Denied
+        cur = mysql.connection.cursor()
+        cur.execute('UPDATE reservations SET status = "Denied" WHERE id = %s', (event_id,))
+        mysql.connection.commit()
+        cur.close()
 
-    flash('Event denied!')
-    return redirect(url_for('admin_dashboard'))
+        flash('Event denied!')
+    except Exception as e:
+        flash(f'Error denying event: {e}')
+    finally:
+        return redirect(url_for('admin_dashboard'))
 
 @app.route('/reservations', methods=['GET', 'POST'])
 def reservations():
@@ -265,7 +321,7 @@ from datetime import datetime
 @app.route('/events')
 def events():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT id, event_name, start_date, end_date, event_time, venue, user_email, status FROM reservations')
+    cur.execute('SELECT id, event_name, start_date, end_date, start_time, end_time, venue , user_email, department, status FROM reservations ')
     events = cur.fetchall()
     cur.close()
 
@@ -288,6 +344,33 @@ def generate_report():
 def view_report():
     return render_template('view_report.html')
 
+@app.route('/get_events_for_day', methods=['POST'])
+def get_events_for_day():
+    if request.method == 'POST':
+        selected_date = request.form['date']  # Get the date from the frontend
+        print(f"Selected Date: {selected_date}")  # Debugging: Print the date
+
+        # Query the database for events on that date
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute('''SELECT event_name, start_time, end_time
+                           FROM reservations
+                           WHERE start_date = %s''', (selected_date,))
+            events = cur.fetchall()
+            cur.close()
+
+            print(f"Events Found: {events}")  # Debugging: Print the events
+
+            # Prepare events for the frontend
+            event_list = []
+            for event in events:
+                event_info = f"{event[0]} - {event[1]} to {event[2]}"
+                event_list.append(event_info)
+
+            return jsonify({'events': event_list})
+        except Exception as e:
+            print(f"Error: {e}")  # Debugging: Print any errors encountered
+            return jsonify({'error': 'An error occurred while fetching events.'})
 
 if __name__ == '__main__':
     app.run(debug=True)

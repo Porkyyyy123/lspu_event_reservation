@@ -4,20 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='/styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='/report.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='report.css') }}">
     <!-- FullCalendar CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet" />
-    <!-- jQuery UI CSS -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <!-- jQuery JS -->
+    <!-- jQuery, jQuery UI, and Moment JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- jQuery UI JS -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- Moment JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <!-- FullCalendar JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
     <style>
         .dropdown-content {
@@ -30,15 +25,9 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
         .dropdown-content a:hover {
-            background-color: rgba(45, 66, 75, 1); /* Updated background color */
-            color: white; /* Updated text color */
+            background-color: rgba(45, 66, 75, 1);
+            color: white;
         }
         form {
             margin: 20px;
@@ -47,6 +36,7 @@
     </style>
 </head>
 <body>
+
     <div class="container">
         <aside class="sidebar">
             <img src="{{ url_for('static', filename='Logo.png') }}" alt="LSPU Organizer Logo" class="logo">
@@ -55,6 +45,7 @@
                     {% if session['role'].lower() == 'admin' %}
                         <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
                         <li><a href="{{ url_for('events') }}">Manage Events</a></li>
+                        <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
                         <li class="dropdown">
                             <a href="#">Report ▼</a>
                             <div class="dropdown-content">
@@ -68,13 +59,7 @@
                         <li><a href="{{ url_for('profile') }}">Profile</a></li>
                         <li><a href="{{ url_for('events') }}">Events</a></li>
                         <li><a href="{{ url_for('reservation') }}">Make a Reservation</a></li>
-                        <li class="dropdown">
-                            <a href="#">Report ▼</a>
-                            <div class="dropdown-content">
-                                <a href="{{ url_for('report') }}">Generate Report</a>
-                                <a href="{{ url_for('report') }}">View Report</a>
-                            </div>
-                        </li>                        
+                        <li><a href="{{ url_for('report') }}">Report</a></li>
                         <li><a href="#">Settings</a></li>
                     {% endif %}
                     <li><a href="{{ url_for('home') }}">Logout</a></li>
@@ -88,70 +73,172 @@
                 <p>Dashboard overview</p>
             </header>
 
-            <section class="calendar-section">
-                <h2>Calendar</h2>
-                <div id="calendar"></div>
-            </section>
-                </form>
-            </section>
-        </main>
-    </div>
+            <!-- Calendar Section -->
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button onclick="changeMonth(-1)">Previous</button>
+                        <select id="monthSelect" onchange="jumpToDate()">
+                            <option value="0">January</option>
+                            <option value="1">February</option>
+                            <option value="2">March</option>
+                            <option value="3">April</option>
+                            <option value="4">May</option>
+                            <option value="5">June</option>
+                            <option value="6">July</option>
+                            <option value="7">August</option>
+                            <option value="8">September</option>
+                            <option value="9">October</option>
+                            <option value="10">November</option>
+                            <option value="11">December</option>
+                        </select>
+                        <input type="number" id="yearInput" value="2024" min="2000" max="2100" onchange="jumpToDate()">
+                        <button onclick="changeMonth(1)">Next</button>
+                    </div>
+                    <h3 id="monthYear"></h3>
+                </div>
 
-    <script>
-        $(document).ready(function() {
-            console.log("Calendar is ready!");
-    
-            var events = [
-                {
-                    title: 'Event 1',
-                    start: '2024-10-15',
-                    description: 'This is a description for Event 1.'
-                },
-                {
-                    title: 'Event 2',
-                    start: '2024-10-17',
-                    end: '2024-10-19',
-                    description: 'This is a description for Event 2.'
-                },
-                {
-                    title: 'Event 3',
-                    start: '2024-10-20T10:00:00',
-                    end: '2024-10-20T12:00:00',
-                    description: 'This is a description for Event 3.'
+                <div class="calendar">
+                    <div class="day-of-week">Sun</div>
+                    <div class="day-of-week">Mon</div>
+                    <div class="day-of-week">Tue</div>
+                    <div class="day-of-week">Wed</div>
+                    <div class="day-of-week">Thu</div>
+                    <div class="day-of-week">Fri</div>
+                    <div class="day-of-week">Sat</div>
+                </div>
+            </div>
+            <div class="timeline-container">
+                <h1>Schedule for the Day <span id="date-display"></span></h1>
+                <div class="timeline" id="timeline"></div>
+            </div>
+        </main>
+
+        <script>
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            let currentMonth = new Date().getMonth();
+            let currentYear = new Date().getFullYear();
+
+            const schedules = {
+                "2024-11-01": ["08:00 AM - Meeting with John", "09:30 AM - Team Standup"],
+                "2024-11-02": ["11:00 AM - Doctor's Appointment", "01:00 PM - Lunch Break"],
+                "2024-11-03": ["03:00 PM - Client Call", "05:00 PM - Wrap Up"],
+            };
+
+            function daysInMonth(month, year) {
+                return new Date(year, month + 1, 0).getDate();
+            }
+
+            function changeMonth(delta) {
+                currentMonth += delta;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
                 }
-            ];
-    
-            $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                editable: true,
-                events: events,
-                dayRender: function(date, cell) {
-                    var dayEvents = events.filter(function(event) {
-                        return moment(event.start).isSame(date, 'day');
+                updateCalendar();
+            }
+
+            function jumpToDate() {
+                currentMonth = parseInt(document.getElementById("monthSelect").value);
+                currentYear = parseInt(document.getElementById("yearInput").value);
+                updateCalendar();
+            }
+
+            function updateCalendar() {
+                document.getElementById("monthYear").textContent = `${monthNames[currentMonth]} ${currentYear}`;
+                generateCalendar(currentMonth, currentYear);
+            }
+
+            function generateCalendar(month, year) {
+                const calendar = document.querySelector('.calendar');
+                calendar.innerHTML = '';
+                const firstDay = new Date(year, month, 1).getDay();
+                const numDays = daysInMonth(month, year);
+
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyCell = document.createElement('div');
+                    emptyCell.classList.add('calendar-day');
+                    calendar.appendChild(emptyCell);
+                }
+
+                for (let day = 1; day <= numDays; day++) {
+                    const dayCell = document.createElement('div');
+                    dayCell.classList.add('calendar-day');
+                    dayCell.innerHTML = `<a href="#">${day}</a>`;
+                    dayCell.addEventListener('click', () => showSchedule(year, month + 1, day));
+                    calendar.appendChild(dayCell);
+                }
+            }
+
+            function showSchedule(year, month, day) {
+                const selectedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const timeline = document.getElementById("timeline");
+                const dateDisplay = document.getElementById("date-display");
+
+                dateDisplay.textContent = `${monthNames[month - 1]} ${day}, ${year}`;
+                timeline.innerHTML = '';
+
+                if (schedules[selectedDate]) {
+                    schedules[selectedDate].forEach(event => {
+                        const timeSlot = document.createElement('div');
+                        timeSlot.classList.add('time-slot');
+                        timeSlot.textContent = event;
+                        timeline.appendChild(timeSlot);
                     });
-    
-                    if (dayEvents.length > 0) {
-                        var tooltipContent = '<strong>Events:</strong><br>';
-                        dayEvents.forEach(function(event) {
-                            tooltipContent += event.title + ': ' + event.description + '<br>';
-                        });
-    
-                        cell.attr('title', tooltipContent);
-                        cell.tooltip({
-                            track: true,
-                            content: function() {
-                                return tooltipContent;
-                            }
-                        });
-                    }
+                } else {
+                    const noEvent = document.createElement('div');
+                    noEvent.classList.add('time-slot');
+                    noEvent.textContent = "No events scheduled.";
+                    timeline.appendChild(noEvent);
                 }
-            });
-        });
-    </script>
-    
-</body>
+            }
+
+            document.getElementById("monthSelect").value = currentMonth;
+            document.getElementById("yearInput").value = currentYear;
+            updateCalendar();
+            
+            function showSchedule(year, month, day) {
+                const selectedDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                console.log('Selected Date:', selectedDate);  // Debugging: Log the selected date
+
+                const timeline = document.getElementById("timeline");
+                const dateDisplay = document.getElementById("date-display");
+
+                dateDisplay.textContent = `${monthNames[month - 1]} ${day}, ${year}`;
+                timeline.innerHTML = '';  // Clear the timeline before adding new events
+
+                // Send AJAX request to fetch events for the selected date
+                $.ajax({
+                    url: '/get_events_for_day',  // Flask route to get events
+                    method: 'POST',
+                    data: { date: selectedDate },  // Send the selected date
+                    success: function(response) {
+                        console.log('Response:', response);  // Debugging: Log the response
+                        if (response.events.length > 0) {
+                            // Display each event in the timeline
+                            response.events.forEach(event => {
+                                const timeSlot = document.createElement('div');
+                                timeSlot.classList.add('time-slot');
+                                timeSlot.textContent = event;
+                                timeline.appendChild(timeSlot);
+                            });
+                        } else {
+                            // If no events are found
+                            const noEvent = document.createElement('div');
+                            noEvent.classList.add('time-slot');
+                            noEvent.textContent = "No events scheduled.";
+                            timeline.appendChild(noEvent);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', status, error);  // Debugging: Log any AJAX error
+                    }
+                });
+            }
+
+        </script>
+    </body>
 </html>

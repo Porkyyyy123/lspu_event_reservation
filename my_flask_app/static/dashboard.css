@@ -145,57 +145,143 @@ header p {
     color: #ddd;
 }
 
-/* Calendar section */
-.calendar-section {
-    margin-top: 20px;
+/* Calendar Styles */
+.calendar-container {
+    margin: 30px auto;
+    max-width: 1200px; /* Expanded width */
+    padding: 50px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    height: 800px;
+    margin-left: 0px;
 }
 
-.calendar-section h2 {
-    font-size: 1.5rem;
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    color: rgba(45, 66, 75);
 }
 
-#calendar {
-    background-color: #ffffff;
+.calendar-header h3 {
+    margin: 0;
+}
+
+.calendar-nav button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.calendar-nav button:hover {
+    background-color: #0056b3;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for 7 days */
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 100%;
+}
+
+.calendar-day {
+    padding: 20px;
+    text-align: center;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+
+.calendar-day:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.calendar-day a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.day-of-week {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.timeline-container {
+    width: 300px;
+    background-color: #fff;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-footer {
-    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    color: #666;
+    position: absolute;
+    top: 145px;  /* 20px from the top of the page */
+    right: 80px;  /* 20px from the right of the page */
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 200px;
-    }
-
-    .main-content {
-        margin-left: 200px;
-        width: calc(100% - 200px);
-    }
+h1 {
+    font-size: 24px;
+    color: #333;
 }
 
-@media (max-width: 480px) {
-    .sidebar {
-        width: 150px;
-    }
+#date-display {
+    font-weight: bold;
+    color: #007BFF;
+}
 
-    .main-content {
-        margin-left: 150px;
-        width: calc(100% - 150px);
-    }
+.timeline {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px;
+    box-sizing: border-box;
+}
 
-    header h1 {
-        font-size: 1.5rem;
-    }
+.time-slot {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
 
-    header p {
-        font-size: 1rem;
-    }
+.time-slot:before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    margin-left: -5px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #007BFF;
 }
